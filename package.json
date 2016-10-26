@@ -37,8 +37,8 @@
     "main": "src/js-feature-toggle-manager.ts",
     "directories": {
       "baseURL": "src",
-      "lib": "src/github",
-      "packages": "src/github"
+      "lib": "src",
+      "packages": "src"
     },
     "configFile": "system.conf.js",
     "dependencies": {},
