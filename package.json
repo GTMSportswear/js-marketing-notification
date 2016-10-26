@@ -1,0 +1,50 @@
+{
+  "name": "js-marketing-notification",
+  "version": "1.0.0",
+  "description": "A module for displaying tasteful marketing content to users upon first visit to page.",
+  "main": "src/js-marketing-notification.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GTMSportswear/js-marketing-notification.git"
+  },
+  "keywords": [
+    "GTMSportswear",
+    "GTM"
+  ],
+  "author": "Chris Young, Sam Schneider",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GTMSportswear/js-marketing-notification/issues"
+  },
+  "homepage": "https://github.com/GTMSportswear/js-marketing-notification#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^0.2.3",
+    "karma-qunit": "^1.2.0",
+    "karma-systemjs": "^0.13.0",
+    "qunitjs": "^1.17.1",
+    "systemjs": "^0.19.40",
+    "traceur": "0.0.111",
+    "tslint": "^3.15.1",
+    "typescript": "^2.0.3"
+  },
+  "jspm": {
+    "registry": "jspm",
+    "main": "src/js-feature-toggle-manager.ts",
+    "directories": {
+      "baseURL": "src",
+      "lib": "src/github",
+      "packages": "src/github"
+    },
+    "configFile": "system.conf.js",
+    "dependencies": {},
+    "devDependencies": {
+      "traceur": "github:jmcriffey/bower-traceur@0.0.93",
+      "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.93"
+    }
+  }
+}
