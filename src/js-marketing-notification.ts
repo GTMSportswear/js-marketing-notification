@@ -1,4 +1,5 @@
 export interface Notification {
+  tabContent: string,
   heading: string;
   buttonTitle: string;
   image?: string;
@@ -8,7 +9,7 @@ export interface Notification {
 export class JsMarketingNotification {
   private notificationContainer: Element;
   
-  constructor(private popupTitle: string) {}
+  constructor(private notificationTitle: string) {}
 
   public output(notification: Notification): void {
     this.notificationContainer = document.createElement('div');
@@ -16,7 +17,7 @@ export class JsMarketingNotification {
     if (this.isFirstPageVisit())
       this.notificationContainer.classList.add('expanded');
 
-    const tab = this.createNotificationTab(this.notificationContainer);
+    const tab = this.createNotificationTab(this.notificationContainer, notification.tabContent);
     const body = this.createNotificationBody(notification);
     
     this.notificationContainer.appendChild(body);
@@ -30,17 +31,22 @@ export class JsMarketingNotification {
   }
 
   private isFirstPageVisit(): boolean {
-    return null === localStorage.getItem(this.popupTitle);
+    return null === localStorage.getItem(this.notificationTitle);
   }
 
-  private createNotificationTab(container: Element): void {
-    const tab = document.createElement('div');
-    tab.classList.add('marketing-notification__tab');
-    tab.addEventListener('click', e => {
+  private createNotificationTab(container: Element, content: string): void {
+    const tabNode = document.createElement('div'),
+          contentNode = document.createElement('h4');
+          
+    contentNode.innerHTML = content;
+    tabNode.appendChild(contentNode);
+    tabNode.classList.add('marketing-notification__tab');
+
+    tabNode.addEventListener('click', e => {
       container.classList.toggle('expanded');
     });
 
-    container.appendChild(tab);
+    container.appendChild(tabNode);
   }
 
   private createNotificationBody(notification: Notification): DocumentFragment {

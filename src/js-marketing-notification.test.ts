@@ -7,6 +7,7 @@ QUnit.module('Marketing notification', {
   beforeEach: () => {
     notifier = new JsMarketingNotification('catalog-request');
     notification = {
+      tabContent: 'Order Catalog',
       heading: 'GTM Sportswear',
       buttonTitle: 'Click Me'
     };
@@ -49,7 +50,8 @@ QUnit.test('Should display notification content', assert => {
   notifier.output(notification);
   const node = document.querySelector('.marketing-notification');
 
-  assert.equal(node.querySelector('h4').innerHTML, 'GTM Sportswear');
+  assert.equal(node.querySelector('.marketing-notification__tab h4').innerHTML, 'Order Catalog')
+  assert.equal(node.querySelector('.marketing-notification__body h4').innerHTML, 'GTM Sportswear');
   assert.equal(node.querySelector('img'), null);
   assert.equal(node.querySelector('p'), null);
   assert.equal(node.querySelector('button').innerHTML, 'Click Me');
