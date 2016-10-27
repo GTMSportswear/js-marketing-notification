@@ -40,6 +40,9 @@
       "lib": "src",
       "packages": "src"
     },
+    "files": [
+      "src/js-marketing-notification.ts"
+    ],
     "configFile": "system.conf.js",
     "dependencies": {},
     "devDependencies": {
