@@ -12,33 +12,20 @@ QUnit.module('Marketing notification', {
   }
 });
 
-QUnit.test('Can handle basic inputs', assert => {
+QUnit.test('Can append itself to page.', assert => {
   notifier.output();
   const node = document.querySelector('.marketing-notification');
 
   assert.ok(node);
 });
 
-// test('Can append itself to page', assert => {
-//   const done = assert.async();
+QUnit.test('Can remove itself from page', assert => {
+  notifier.output();
+  notifier.remove();
+  const node = document.querySelector('.marketing-notification');
 
-//   popup.output('template.html', {})
-//     .then(() => {
-//       notEqual(document.querySelector('.popup__bottom'), null);
-//       done();
-//     });
-// });
-
-// test('Can remove itself from page', assert => {
-//   const done = assert.async();
-
-//   popup.output('template.html', {})
-//     .then(() => {
-//       popup.remove();
-//       equal(document.querySelector('.popup__bottom'), null);
-//       done();
-//     }); 
-// });
+  assert.notOk(node);
+});
 
 // test('Should be expanded on first page load', assert => {
 //   const done = assert.async();

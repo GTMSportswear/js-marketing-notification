@@ -11,12 +11,12 @@ export class JsMarketingNotification {
   constructor(private popupTitle: string) {}
 
   public output(): void {
-    const popupNode = document.createElement('div');
-    popupNode.classList.add('marketing-notification');
+    this.popupNode = document.createElement('div');
+    this.popupNode.classList.add('marketing-notification');
     if (this.isFirstPageVisit())
-      popupNode.classList.add('expanded');
+      this.popupNode.classList.add('expanded');
 
-    document.body.appendChild(popupNode);
+    document.body.appendChild(this.popupNode);
   }
 
   public remove(): void {
