@@ -17,9 +17,9 @@ export class JsMarketingNotification {
     if (this.isFirstPageVisit())
       this.notificationContainer.classList.add('expanded');
 
-    const tab = this.createNotificationTab(this.notificationContainer, notification.tabContent);
     const body = this.createNotificationBody(notification);
     
+    this.createNotificationTab(this.notificationContainer, notification.tabContent);
     this.notificationContainer.appendChild(body);
 
     document.body.appendChild(this.notificationContainer);
@@ -50,8 +50,8 @@ export class JsMarketingNotification {
   }
 
   private createNotificationBody(notification: Notification): DocumentFragment {
-    const fragment = document.createDocumentFragment();
-    const body = document.createElement('div');
+    const fragment = document.createDocumentFragment(),
+          body = document.createElement('div');
     body.classList.add('marketing-notification__body');
 
     this.createHeading(body, notification.heading);
