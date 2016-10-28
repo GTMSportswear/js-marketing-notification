@@ -77,7 +77,7 @@ export class JsMarketingNotification {
   }
 
   private createImage(container: Element, imageSrc: string): void {
-    if (!imageSrc) return;
+    if (null == imageSrc) return;
 
     const imageNode = document.createElement('img');
     imageNode.src = imageSrc;
@@ -85,7 +85,7 @@ export class JsMarketingNotification {
   }
 
   private createContent(container: Element, content: string): void {
-    if (!content) return;
+    if (null == content) return;
 
     const contentNode = document.createElement('p');
     contentNode.innerHTML = content;
