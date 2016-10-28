@@ -82,3 +82,17 @@ QUnit.test('Should toggle expanded class when clicked', assert => {
   tabNode.dispatchEvent(event);
   assert.ok(node.classList.contains('expanded'));
 });
+
+QUnit.test('Should add to local storage after initial click', assert=> {
+  notifier.output(notification);
+  const node = document.querySelector('.marketing-notification'),
+        tabNode = document.querySelector('.marketing-notification__tab'),
+        event = new MouseEvent('click', {
+                  'view': window,
+                  'bubbles': true,
+                  'cancelable': true
+                });
+
+  tabNode.dispatchEvent(event);
+  assert.ok(null !== localStorage.getItem('catalog-request'));
+});

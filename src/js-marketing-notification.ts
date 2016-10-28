@@ -1,3 +1,5 @@
+import { LocalStorageManager } from './github/gtmsportswear/js-local-storage-manager@1.0.2/local-storage-manager';
+
 export interface Notification {
   tabContent: string,
   heading: string;
@@ -35,7 +37,8 @@ export class JsMarketingNotification {
   }
 
   private createNotificationTab(container: Element, content: string): void {
-    const tabNode = document.createElement('div'),
+    const lsm = new LocalStorageManager(),
+          tabNode = document.createElement('div'),
           contentNode = document.createElement('h4');
           
     contentNode.innerHTML = content;
@@ -43,6 +46,9 @@ export class JsMarketingNotification {
     tabNode.classList.add('marketing-notification__tab');
 
     tabNode.addEventListener('click', e => {
+      if (this.isFirstPageVisit())
+        lsm.setItem('catalog-request', new Date().toISOString());
+
       container.classList.toggle('expanded');
     });
 
