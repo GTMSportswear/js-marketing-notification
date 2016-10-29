@@ -1,6 +1,6 @@
 {
   "name": "js-marketing-notification",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A module for displaying tasteful marketing content to users upon first visit to page.",
   "main": "src/js-marketing-notification.js",
   "scripts": {
@@ -40,6 +40,9 @@
       "lib": "src",
       "packages": "src"
     },
+    "files": [
+      "src/js-marketing-notification.ts"
+    ],
     "configFile": "system.conf.js",
     "dependencies": {
       "gtmsportswear/js-local-storage-manager": "github:gtmsportswear/js-local-storage-manager@1.0.2"
