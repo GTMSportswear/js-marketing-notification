@@ -1,7 +1,7 @@
 import { JsMarketingNotification, Notification } from './js-marketing-notification';
 
-let notifier: JsMarketingNotification;
-let notification: Notification;
+let notifier: JsMarketingNotification,
+    notification: Notification;
 
 QUnit.module('Marketing notification', {
   beforeEach: () => {
@@ -81,4 +81,10 @@ QUnit.test('Should toggle expanded class when clicked', assert => {
   assert.notOk(node.classList.contains('expanded'));
   tabNode.dispatchEvent(event);
   assert.ok(node.classList.contains('expanded'));
+});
+
+QUnit.test('Should add to local storage after initial load', assert=> {
+  notifier.output(notification);
+
+  assert.notEqual(localStorage.getItem('catalog-request'), null);
 });

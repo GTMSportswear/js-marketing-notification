@@ -1,3 +1,5 @@
+import { LocalStorageManager } from './github/gtmsportswear/js-local-storage-manager@1.0.2/local-storage-manager';
+
 export interface Notification {
   tabContent: string,
   heading: string;
@@ -12,13 +14,15 @@ export class JsMarketingNotification {
   constructor(private notificationTitle: string) {}
 
   public output(notification: Notification): void {
+    const lsm = new LocalStorageManager(),
+          body = this.createNotificationBody(notification);
+
     this.notificationContainer = document.createElement('div');
     this.notificationContainer.classList.add('marketing-notification');
     if (this.isFirstPageVisit())
       this.notificationContainer.classList.add('expanded');
-
-    const body = this.createNotificationBody(notification);
     
+    lsm.setItem(this.notificationTitle, new Date().toISOString());
     this.createNotificationTab(this.notificationContainer, notification.tabContent);
     this.notificationContainer.appendChild(body);
 
@@ -71,7 +75,7 @@ export class JsMarketingNotification {
   }
 
   private createImage(container: Element, imageSrc: string): void {
-    if (!imageSrc) return;
+    if (null == imageSrc) return;
 
     const imageNode = document.createElement('img');
     imageNode.src = imageSrc;
@@ -79,7 +83,7 @@ export class JsMarketingNotification {
   }
 
   private createContent(container: Element, content: string): void {
-    if (!content) return;
+    if (null == content) return;
 
     const contentNode = document.createElement('p');
     contentNode.innerHTML = content;
