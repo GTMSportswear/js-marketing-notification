@@ -14,13 +14,15 @@ export class JsMarketingNotification {
   constructor(private notificationTitle: string) {}
 
   public output(notification: Notification): void {
+    const lsm = new LocalStorageManager(),
+          body = this.createNotificationBody(notification);
+
     this.notificationContainer = document.createElement('div');
     this.notificationContainer.classList.add('marketing-notification');
     if (this.isFirstPageVisit())
       this.notificationContainer.classList.add('expanded');
-
-    const body = this.createNotificationBody(notification);
     
+    lsm.setItem(this.notificationTitle, new Date().toISOString());
     this.createNotificationTab(this.notificationContainer, notification.tabContent);
     this.notificationContainer.appendChild(body);
 
@@ -37,8 +39,7 @@ export class JsMarketingNotification {
   }
 
   private createNotificationTab(container: Element, content: string): void {
-    const lsm = new LocalStorageManager(),
-          tabNode = document.createElement('div'),
+    const tabNode = document.createElement('div'),
           contentNode = document.createElement('h4');
           
     contentNode.innerHTML = content;
@@ -46,9 +47,6 @@ export class JsMarketingNotification {
     tabNode.classList.add('marketing-notification__tab');
 
     tabNode.addEventListener('click', e => {
-      if (this.isFirstPageVisit())
-        lsm.setItem('catalog-request', new Date().toISOString());
-
       container.classList.toggle('expanded');
     });
 
