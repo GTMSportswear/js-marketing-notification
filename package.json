@@ -40,6 +40,9 @@
       "lib": "src",
       "packages": "src"
     },
+    "files": [
+      "src/js-marketing-notification.ts"
+    ],
     "configFile": "system.conf.js",
     "dependencies": {
       "gtmsportswear/js-local-storage-manager": "github:gtmsportswear/js-local-storage-manager@1.0.2"
