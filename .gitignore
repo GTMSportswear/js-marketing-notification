@@ -22,7 +22,6 @@ build/Release
 
 # Dependency directory
 node_modules
-src/github
 
 # Optional npm cache directory
 .npm
