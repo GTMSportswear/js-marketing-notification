@@ -1,10 +1,13 @@
 import { JsMarketingNotification, Notification } from './js-marketing-notification';
+import { LocalStorageManager } from './github/gtmsportswear/js-local-storage-manager@1.0.2/local-storage-manager';
 
 let notifier: JsMarketingNotification,
-    notification: Notification;
+    notification: Notification,
+    lsm;
 
 QUnit.module('Marketing notification', {
   beforeEach: () => {
+    lsm = new LocalStorageManager();
     notifier = new JsMarketingNotification('catalog-request');
     notification = {
       tabContent: 'Order Catalog',
@@ -14,7 +17,7 @@ QUnit.module('Marketing notification', {
   },
   afterEach: () => {
     notifier.remove();
-    localStorage.removeItem('catalog-request');
+    lsm.removeItem('catalog-request');
   }
 });
 
@@ -40,7 +43,7 @@ QUnit.test('Should be expanded on first page load', assert => {
 });
 
 QUnit.test('Should be collapsed on subsequent page loads', assert => {
-  localStorage.setItem('catalog-request', new Date().toISOString());
+  lsm.setItem('catalog-request', new Date().toISOString());
 
   notifier.output(notification);
   assert.notOk(document.querySelector('.marketing-notification').classList.contains('expanded'));
@@ -86,5 +89,5 @@ QUnit.test('Should toggle expanded class when clicked', assert => {
 QUnit.test('Should add to local storage after initial load', assert=> {
   notifier.output(notification);
 
-  assert.notEqual(localStorage.getItem('catalog-request'), null);
+  assert.notEqual(lsm.getItem('catalog-request'), null);
 });
