@@ -1,19 +1,21 @@
 import { JsMarketingNotification, Notification } from './js-marketing-notification';
 import { LocalStorageManager } from './github/gtmsportswear/js-local-storage-manager@1.0.2/local-storage-manager';
 
-let notifier: JsMarketingNotification,
-    notification: Notification,
-    lsm;
+let lsm,
+    notifier: JsMarketingNotification,
+    notification: Notification = {
+      tabContent: {
+        node: document.createElement('h2')
+      },
+      notificationBlocks: [{
+        node: document.createElement('a')
+      }]
+    };
 
 QUnit.module('Marketing notification', {
   beforeEach: () => {
     lsm = new LocalStorageManager();
     notifier = new JsMarketingNotification('catalog-request');
-    notification = {
-      tabContent: 'Order Catalog',
-      heading: 'GTM Sportswear',
-      buttonTitle: 'Click Me'
-    };
   },
   afterEach: () => {
     notifier.remove();
@@ -21,14 +23,14 @@ QUnit.module('Marketing notification', {
   }
 });
 
-QUnit.test('Can append itself to page.', assert => {
+QUnit.test('can append itself to page.', assert => {
   notifier.output(notification);
   const node = document.querySelector('.marketing-notification');
 
   assert.ok(node);
 });
 
-QUnit.test('Can remove itself from page', assert => {
+QUnit.test('can remove itself from page', assert => {
   notifier.output(notification);
   notifier.remove();
   const node = document.querySelector('.marketing-notification');
@@ -36,41 +38,21 @@ QUnit.test('Can remove itself from page', assert => {
   assert.notOk(node);
 });
 
-QUnit.test('Should be expanded on first page load', assert => {
+QUnit.test('should be expanded on first page load', assert => {
   notifier.output(notification);
 
+  console.log(lsm.getItem('catalog-request'));
   assert.ok(document.querySelector('.marketing-notification').classList.contains('expanded'));
 });
 
-QUnit.test('Should be collapsed on subsequent page loads', assert => {
+QUnit.test('should be collapsed on subsequent page loads', assert => {
   lsm.setItem('catalog-request', new Date().toISOString());
 
   notifier.output(notification);
   assert.notOk(document.querySelector('.marketing-notification').classList.contains('expanded'));
 });
 
-QUnit.test('Should display notification content', assert => {
-  notifier.output(notification);
-  const node = document.querySelector('.marketing-notification');
-
-  assert.equal(node.querySelector('.marketing-notification__tab h4').innerHTML, 'Order Catalog')
-  assert.equal(node.querySelector('.marketing-notification__body h4').innerHTML, 'GTM Sportswear');
-  assert.equal(node.querySelector('img'), null);
-  assert.equal(node.querySelector('p'), null);
-  assert.equal(node.querySelector('button').innerHTML, 'Click Me');
-});
-
-QUnit.test('Should show optional content if available', assert => {
-  notification.image = 'testImage.jpg';
-  notification.content = 'Lorem ipsum';
-  notifier.output(notification);
-  const node = document.querySelector('.marketing-notification');
-
-  assert.equal(node.querySelector('img').getAttribute('src'), 'testImage.jpg');
-  assert.equal(node.querySelector('p').innerHTML, 'Lorem ipsum');
-});
-
-QUnit.test('Should toggle expanded class when clicked', assert => {
+QUnit.test('should toggle expanded class when clicked', assert => {
   notifier.output(notification);
   const node = document.querySelector('.marketing-notification'),
         tabNode = document.querySelector('.marketing-notification__tab'),
@@ -86,8 +68,42 @@ QUnit.test('Should toggle expanded class when clicked', assert => {
   assert.ok(node.classList.contains('expanded'));
 });
 
-QUnit.test('Should add to local storage after initial load', assert=> {
+QUnit.test('should add to local storage after initial load', assert=> {
   notifier.output(notification);
 
   assert.notEqual(lsm.getItem('catalog-request'), null);
+});
+
+QUnit.test('should contain tab content', assert => {
+  notifier.output(notification);
+  const node = document.querySelector('.marketing-notification__tab');
+
+  assert.notEqual(node, null);
+  assert.notEqual(node.querySelector('h2'), null);
+});
+
+QUnit.test('should contain notification block', assert => {
+  notifier.output(notification);
+  const node = document.querySelector('.marketing-notification__body');
+
+  assert.notEqual(node, null);
+  assert.notEqual(node.querySelector('a'), null);
+});
+
+QUnit.test('should add tab and body classNames', assert => {
+  const classNames = ['sample', 'sample2'];
+  notification.tabContent.classNames = [];
+  notification.notificationBlocks.forEach(block => block.classNames = []);
+  classNames.forEach(className => {
+    notification.tabContent.classNames.push(className);
+    notification.notificationBlocks.forEach(block => block.classNames.push(className));
+  });
+  notifier.output(notification);
+  const tabNode = document.querySelector('.marketing-notification__tab'),
+        bodyNodes = document.querySelectorAll('.marketing-notification__block');
+
+  assert.ok(classNames.every(className => tabNode.classList.contains(className)));
+  assert.ok(classNames.every(className => {
+    return [...bodyNodes].every(bodyNode => bodyNode.classList.contains(className));
+  }));
 });

@@ -1,32 +1,36 @@
 import { LocalStorageManager } from './github/gtmsportswear/js-local-storage-manager@1.0.2/local-storage-manager';
 
+export interface NotificationNode {
+  classNames?: Array<string>,
+  node: Element
+}
+
 export interface Notification {
-  tabContent: string,
-  heading: string;
-  buttonTitle: string;
-  image?: string;
-  content?: string;
+  tabContent: NotificationNode,
+  notificationBlocks: Array<NotificationNode>
 }
 
 export class JsMarketingNotification {
-  private notificationContainer: Element;
-  
-  constructor(private notificationTitle: string) {}
+  private notificationContainer: Element,
+          lsm = new LocalStorageManager();
+
+  constructor(private notificationTitle: string) { }
 
   public output(notification: Notification): void {
-    const lsm = new LocalStorageManager(),
-          body = this.createNotificationBody(notification);
-
     this.notificationContainer = document.createElement('div');
     this.notificationContainer.classList.add('marketing-notification');
+
+    const tab = this.createNotificationTab(notification.tabContent, this.notificationContainer),
+          body = this.createNotificationBody(notification.notificationBlocks);
+
+    this.notificationContainer.appendChild(tab);
+    this.notificationContainer.appendChild(body);
+    document.body.appendChild(this.notificationContainer);
+
     if (this.isFirstPageVisit())
       this.notificationContainer.classList.add('expanded');
-    
-    lsm.setItem(this.notificationTitle, new Date().toISOString());
-    this.createNotificationTab(this.notificationContainer, notification.tabContent);
-    this.notificationContainer.appendChild(body);
 
-    document.body.appendChild(this.notificationContainer);
+    this.lsm.setItem(this.notificationTitle, new Date().toISOString());
   }
 
   public remove(): void {
@@ -35,66 +39,37 @@ export class JsMarketingNotification {
   }
 
   private isFirstPageVisit(): boolean {
-    return null === localStorage.getItem(this.notificationTitle);
+    return null === this.lsm.getItem(this.notificationTitle);
   }
 
-  private createNotificationTab(container: Element, content: string): void {
-    const tabNode = document.createElement('div'),
-          contentNode = document.createElement('h4');
-          
-    contentNode.innerHTML = content;
-    tabNode.appendChild(contentNode);
-    tabNode.classList.add('marketing-notification__tab');
+  private createNotificationTab(notification: NotificationNode, containerNode: Element): Element {
+    const node = document.createElement('div');
 
-    tabNode.addEventListener('click', e => {
-      container.classList.toggle('expanded');
+    this.appendNotificationNode(notification, node);
+    node.classList.add('marketing-notification__tab');
+
+    node.addEventListener('click', e => {
+      containerNode.classList.toggle('expanded');
     });
 
-    container.appendChild(tabNode);
+    return node;
   }
 
-  private createNotificationBody(notification: Notification): DocumentFragment {
-    const fragment = document.createDocumentFragment(),
-          body = document.createElement('div');
-    body.classList.add('marketing-notification__body');
+  private createNotificationBody(notificationBlocks: Array<NotificationNode>): Element {
+    const node = document.createElement('div'),
+          notificationNodes = notificationBlocks.map(block => this.appendNotificationNode(block, node));
 
-    this.createHeading(body, notification.heading);
-    this.createImage(body, notification.image);
-    this.createContent(body, notification.content);
-    this.createButton(body, notification.buttonTitle);
+    node.classList.add('marketing-notification__body');
 
-    fragment.appendChild(body);
-
-    return fragment;
+    return node;
   }
 
-  private createHeading(container: Element, heading: string): void {
-    const headingNode = document.createElement('h4');
-    headingNode.innerHTML = heading;
-    container.appendChild(headingNode);
-  }
+  private appendNotificationNode(notification: NotificationNode, containerNode: Element): Element {
+    containerNode.appendChild(notification.node);
 
-  private createImage(container: Element, imageSrc: string): void {
-    if (null == imageSrc) return;
+    if (null != notification.classNames && notification.classNames.length > 0)
+      notification.classNames.forEach(className => containerNode.classList.add(className));
 
-    const imageNode = document.createElement('img');
-    imageNode.src = imageSrc;
-    container.appendChild(imageNode);
-  }
-
-  private createContent(container: Element, content: string): void {
-    if (null == content) return;
-
-    const contentNode = document.createElement('p');
-    contentNode.innerHTML = content;
-    container.appendChild(contentNode);
-  }
-
-  private createButton(container: Element, title: string): void {
-    const buttonNode = document.createElement('button');
-    ['btn', 'blue', 'primary'].forEach(className => buttonNode.classList.add(className));
-    buttonNode.innerHTML = title;
-
-    container.appendChild(buttonNode);
+    return containerNode;
   }
 }
