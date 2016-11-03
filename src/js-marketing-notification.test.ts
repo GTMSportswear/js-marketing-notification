@@ -4,14 +4,14 @@ import { LocalStorageManager } from './github/gtmsportswear/js-local-storage-man
 let lsm: LocalStorageManager,
     notifier: JsMarketingNotification,
     notification: Notification = {
-      tabContent: document.createElement('h2'),
+      tabText: 'Catalog Request',
       notificationBlocks: [document.createElement('a')]
     };
 
 QUnit.module('Marketing notification', {
   beforeEach: () => {
     lsm = new LocalStorageManager();
-    notifier = new JsMarketingNotification('catalog-request');
+    notifier = new JsMarketingNotification('catalog-request', document.body);
   },
   afterEach: () => {
     notifier.remove();
@@ -75,7 +75,7 @@ QUnit.test('should contain tab content', assert => {
   const node = document.querySelector('.marketing-notification__tab');
 
   assert.notEqual(node, null);
-  assert.notEqual(node.querySelector('h2'), null);
+  assert.notEqual(node.innerHTML, null);
 });
 
 QUnit.test('should contain notification block', assert => {

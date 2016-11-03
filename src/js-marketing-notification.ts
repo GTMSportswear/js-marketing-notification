@@ -1,7 +1,7 @@
 import { LocalStorageManager } from './github/gtmsportswear/js-local-storage-manager@1.0.2/local-storage-manager';
 
 export interface Notification {
-  tabContent: Element,
+  tabText: string,
   notificationBlocks: Array<Element>
 }
 
@@ -9,18 +9,14 @@ export class JsMarketingNotification {
   private notificationContainer: Element;
   private lsm = new LocalStorageManager();
 
-  constructor(private notificationTitle: string) { }
+  constructor(private notificationTitle: string, private notificationParent: Element) { }
 
   public output(notification: Notification): void {
     this.notificationContainer = document.createElement('div');
     this.notificationContainer.classList.add('marketing-notification');
-
-    const tab = this.createNotificationTab(notification.tabContent, this.notificationContainer),
-          body = this.createNotificationBody(notification.notificationBlocks);
-
-    this.notificationContainer.appendChild(tab);
-    this.notificationContainer.appendChild(body);
-    document.body.appendChild(this.notificationContainer);
+    this.notificationContainer.appendChild(this.createNotificationTab(notification.tabText, this.notificationContainer));
+    this.notificationContainer.appendChild(this.createNotificationBody(notification.notificationBlocks));
+    this.notificationParent.appendChild(this.notificationContainer);
 
     if (this.isFirstPageVisit())
       this.notificationContainer.classList.add('expanded');
@@ -37,10 +33,10 @@ export class JsMarketingNotification {
     return null === this.lsm.getItem(this.notificationTitle);
   }
 
-  private createNotificationTab(tabContentNode: Element, containerNode: Element): Element {
+  private createNotificationTab(tabText: string, containerNode: Element): Element {
     const node = document.createElement('div');
 
-    this.appendNotificationNode(tabContentNode, node);
+    node.innerHTML = tabText;
     node.classList.add('marketing-notification__tab');
 
     node.addEventListener('click', e => {
