@@ -1,15 +1,11 @@
 import { JsMarketingNotification, Notification } from './js-marketing-notification';
 import { LocalStorageManager } from './github/gtmsportswear/js-local-storage-manager@1.0.2/local-storage-manager';
 
-let lsm,
+let lsm: LocalStorageManager,
     notifier: JsMarketingNotification,
     notification: Notification = {
-      tabContent: {
-        node: document.createElement('h2')
-      },
-      notificationBlocks: [{
-        node: document.createElement('a')
-      }]
+      tabContent: document.createElement('h2'),
+      notificationBlocks: [document.createElement('a')]
     };
 
 QUnit.module('Marketing notification', {
@@ -88,22 +84,4 @@ QUnit.test('should contain notification block', assert => {
 
   assert.notEqual(node, null);
   assert.notEqual(node.querySelector('a'), null);
-});
-
-QUnit.test('should add tab and body classNames', assert => {
-  const classNames = ['sample', 'sample2'];
-  notification.tabContent.classNames = [];
-  notification.notificationBlocks.forEach(block => block.classNames = []);
-  classNames.forEach(className => {
-    notification.tabContent.classNames.push(className);
-    notification.notificationBlocks.forEach(block => block.classNames.push(className));
-  });
-  notifier.output(notification);
-  const tabNode = document.querySelector('.marketing-notification__tab'),
-        bodyNodes = document.querySelectorAll('.marketing-notification__block');
-
-  assert.ok(classNames.every(className => tabNode.classList.contains(className)));
-  assert.ok(classNames.every(className => {
-    return [...bodyNodes].every(bodyNode => bodyNode.classList.contains(className));
-  }));
 });

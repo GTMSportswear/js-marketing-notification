@@ -1,18 +1,13 @@
 import { LocalStorageManager } from './github/gtmsportswear/js-local-storage-manager@1.0.2/local-storage-manager';
 
-export interface NotificationNode {
-  classNames?: Array<string>,
-  node: Element
-}
-
 export interface Notification {
-  tabContent: NotificationNode,
-  notificationBlocks: Array<NotificationNode>
+  tabContent: Element,
+  notificationBlocks: Array<Element>
 }
 
 export class JsMarketingNotification {
-  private notificationContainer: Element,
-          lsm = new LocalStorageManager();
+  private notificationContainer: Element;
+  private lsm = new LocalStorageManager();
 
   constructor(private notificationTitle: string) { }
 
@@ -42,10 +37,10 @@ export class JsMarketingNotification {
     return null === this.lsm.getItem(this.notificationTitle);
   }
 
-  private createNotificationTab(notification: NotificationNode, containerNode: Element): Element {
+  private createNotificationTab(tabContentNode: Element, containerNode: Element): Element {
     const node = document.createElement('div');
 
-    this.appendNotificationNode(notification, node);
+    this.appendNotificationNode(tabContentNode, node);
     node.classList.add('marketing-notification__tab');
 
     node.addEventListener('click', e => {
@@ -55,20 +50,17 @@ export class JsMarketingNotification {
     return node;
   }
 
-  private createNotificationBody(notificationBlocks: Array<NotificationNode>): Element {
-    const node = document.createElement('div'),
-          notificationNodes = notificationBlocks.map(block => this.appendNotificationNode(block, node));
+  private createNotificationBody(notificationBlocks: Array<Element>): Element {
+    const node = document.createElement('div');
 
+    notificationBlocks.forEach(block => this.appendNotificationNode(block, node));
     node.classList.add('marketing-notification__body');
 
     return node;
   }
 
-  private appendNotificationNode(notification: NotificationNode, containerNode: Element): Element {
-    containerNode.appendChild(notification.node);
-
-    if (null != notification.classNames && notification.classNames.length > 0)
-      notification.classNames.forEach(className => containerNode.classList.add(className));
+  private appendNotificationNode(node: Element, containerNode: Element): Element {
+    containerNode.appendChild(node);
 
     return containerNode;
   }
