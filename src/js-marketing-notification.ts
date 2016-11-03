@@ -1,8 +1,8 @@
 import { LocalStorageManager } from './github/gtmsportswear/js-local-storage-manager@1.0.2/local-storage-manager';
 
 export interface Notification {
-  tabText: string,
-  notificationBlocks: Array<Element>
+  tabText: string;
+  notificationBlocks: Array<Element>;
 }
 
 export class JsMarketingNotification {
