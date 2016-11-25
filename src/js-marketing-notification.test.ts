@@ -36,16 +36,16 @@ QUnit.test('can remove itself from page', assert => {
 
 QUnit.test('should be expanded on first page load', assert => {
   notifier.output(notification);
+  const node = document.querySelector('.marketing-notification');
 
-  console.log(lsm.getItem('catalog-request'));
-  assert.ok(document.querySelector('.marketing-notification').classList.contains('expanded'));
+  assert.ok(node.classList.contains('marketing-notification--expanded'));
 });
 
 QUnit.test('should be collapsed on subsequent page loads', assert => {
   lsm.setItem('catalog-request', new Date().toISOString());
 
   notifier.output(notification);
-  assert.notOk(document.querySelector('.marketing-notification').classList.contains('expanded'));
+  assert.notOk(document.querySelector('.marketing-notification').classList.contains('marketing-notification--expanded'));
 });
 
 QUnit.test('should toggle expanded class when clicked', assert => {
@@ -59,9 +59,9 @@ QUnit.test('should toggle expanded class when clicked', assert => {
                 });
 
   tabNode.dispatchEvent(event);
-  assert.notOk(node.classList.contains('expanded'));
+  assert.notOk(node.classList.contains('marketing-notification--expanded'));
   tabNode.dispatchEvent(event);
-  assert.ok(node.classList.contains('expanded'));
+  assert.ok(node.classList.contains('marketing-notification--expanded'));
 });
 
 QUnit.test('should add to local storage after initial load', assert=> {
@@ -84,4 +84,23 @@ QUnit.test('should contain notification block', assert => {
 
   assert.notEqual(node, null);
   assert.notEqual(node.querySelector('a'), null);
+});
+
+QUnit.test('should add open and close callback', assert => {
+  let value = false;
+  notifier.setOpenCallback = () => { return value = true; };
+  notifier.setCloseCallback = () => { return value = false; };
+  notifier.output(notification);
+
+  const node = document.querySelector('.marketing-notification'),
+        tabNode = document.querySelector('.marketing-notification__tab'),
+        event = new MouseEvent('click', {
+                  'view': window,
+                  'bubbles': true,
+                  'cancelable': true
+                });
+
+  assert.equal(value, true);
+  tabNode.dispatchEvent(event);
+  assert.equal(value, false);
 });
