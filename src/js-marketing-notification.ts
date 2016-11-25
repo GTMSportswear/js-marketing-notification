@@ -3,6 +3,7 @@ import { LocalStorageManager } from './github/gtmsportswear/js-local-storage-man
 export interface Notification {
   tabText: string;
   notificationBlocks: Array<Element>;
+  collapseTimeout?: number;
 }
 
 export class JsMarketingNotification {
@@ -14,13 +15,19 @@ export class JsMarketingNotification {
   public output(notification: Notification): void {
     this.notificationContainer = document.createElement('div');
     this.notificationContainer.classList.add('marketing-notification');
-    this.notificationContainer.appendChild(this.createNotificationTab(notification.tabText, this.notificationContainer));
+    this.notificationContainer.appendChild(this.createNotificationTab(notification.tabText, this.notificationContainer, notification));
     this.notificationContainer.appendChild(this.createNotificationBody(notification.notificationBlocks));
     this.notificationParent.appendChild(this.notificationContainer);
 
-    if (this.isFirstPageVisit())
-      this.notificationContainer.classList.add('expanded');
+    notification.collapseTimeout = notification.collapseTimeout ? notification.collapseTimeout : 1000 * 10;
 
+    if (this.isFirstPageVisit()) {
+      this.toggleNotificationDisplay(this.notificationContainer, notification);
+      setTimeout(() => {
+        if (this.notificationContainer.classList.contains('marketing-notification--expanded'))
+          this.toggleNotificationDisplay(this.notificationContainer, notification);
+      }, notification.collapseTimeout);
+    }
     this.lsm.setItem(this.notificationTitle, new Date().toISOString());
   }
 
@@ -57,7 +64,7 @@ export class JsMarketingNotification {
     node.classList.add('marketing-notification__tab');
 
     node.addEventListener('click', e => {
-      containerNode.classList.toggle('expanded');
+      this.toggleNotificationDisplay(containerNode, notification);
     });
 
     return node;
@@ -76,5 +83,17 @@ export class JsMarketingNotification {
     containerNode.appendChild(node);
 
     return containerNode;
+  }
+
+  private toggleNotificationDisplay(node: Element, notification: Notification): void {
+    const expansionClass = 'marketing-notification--expanded';
+    node.classList.toggle(expansionClass);
+
+    if (node.classList.contains(expansionClass)) {
+      if (this.openCallback) this.openCallback(node);
+    }
+    else {
+      if (this.closeCallback) this.closeCallback(node);
+    }
   }
 }
