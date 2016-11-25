@@ -8,8 +8,8 @@ export interface Notification {
 export class JsMarketingNotification {
   private notificationContainer: Element;
   private lsm = new LocalStorageManager();
-
-  constructor(private notificationTitle: string, private notificationParent: Element) { }
+  private openCallback: Function;
+  private closeCallback: Function;
 
   public output(notification: Notification): void {
     this.notificationContainer = document.createElement('div');
@@ -28,6 +28,18 @@ export class JsMarketingNotification {
     if (this.notificationContainer && document.body.contains(this.notificationContainer))
       document.body.removeChild(this.notificationContainer);
   }
+
+  public set setOpenCallback(fn: Function) {
+    if (null == fn) return;
+    this.openCallback = fn;
+  }
+
+  public set setCloseCallback(fn: Function) {
+    if (null == fn) return;
+    this.closeCallback = fn;
+  }
+
+  constructor(private notificationTitle: string, private notificationParent: Element) { }
 
   private isFirstPageVisit(): boolean {
     return null === this.lsm.getItem(this.notificationTitle);
