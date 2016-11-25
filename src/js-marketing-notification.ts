@@ -33,10 +33,15 @@ export class JsMarketingNotification {
     return null === this.lsm.getItem(this.notificationTitle);
   }
 
-  private createNotificationTab(tabText: string, containerNode: Element): Element {
-    const node = document.createElement('div');
+  private createNotificationTab(tabText: string, containerNode: Element, notification: Notification): Element {
+    const node = document.createElement('div'),
+          nodeHeader = document.createElement('h2'),
+          nodeArrow = document.createElement('span');
 
-    node.innerHTML = tabText;
+    ['icon', 'arrow-right'].forEach(clss => nodeArrow.classList.add(clss));
+    nodeHeader.innerHTML = tabText;
+    node.appendChild(nodeHeader);
+    node.appendChild(nodeArrow);
     node.classList.add('marketing-notification__tab');
 
     node.addEventListener('click', e => {
