@@ -37,12 +37,12 @@ export class JsMarketingNotification {
   }
 
   public set setOpenCallback(fn: Function) {
-    if (null == fn || typeof(fn) !== 'function') return;
+    if (typeof(fn) !== 'function') return;
     this.openCallback = fn;
   }
 
   public set setCloseCallback(fn: Function) {
-    if (null == fn || typeof(fn) !== 'function') return;
+    if (typeof(fn) !== 'function') return;
     this.closeCallback = fn;
   }
 
@@ -89,8 +89,11 @@ export class JsMarketingNotification {
     const expansionClass = 'marketing-notification--expanded';
     node.classList.toggle(expansionClass);
 
-    if (node.classList.contains(expansionClass) && this.openCallback) return this.openCallback(node);
-
-    if (this.closeCallback) return this.closeCallback(node);
+    if (node.classList.contains(expansionClass)) {
+      if (this.openCallback) this.openCallback(node);
+    }
+    else {
+      if (this.closeCallback) return this.closeCallback(node);
+    }
   }
 }
