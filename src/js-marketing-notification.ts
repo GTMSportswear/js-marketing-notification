@@ -3,24 +3,31 @@ import { LocalStorageManager } from './github/gtmsportswear/js-local-storage-man
 export interface Notification {
   tabText: string;
   notificationBlocks: Array<Element>;
+  collapseTimeout?: number;
 }
 
 export class JsMarketingNotification {
   private notificationContainer: Element;
   private lsm = new LocalStorageManager();
-
-  constructor(private notificationTitle: string, private notificationParent: Element) { }
+  private openCallback: Function;
+  private closeCallback: Function;
 
   public output(notification: Notification): void {
     this.notificationContainer = document.createElement('div');
     this.notificationContainer.classList.add('marketing-notification');
-    this.notificationContainer.appendChild(this.createNotificationTab(notification.tabText, this.notificationContainer));
+    this.notificationContainer.appendChild(this.createNotificationTab(notification.tabText, this.notificationContainer, notification));
     this.notificationContainer.appendChild(this.createNotificationBody(notification.notificationBlocks));
     this.notificationParent.appendChild(this.notificationContainer);
 
-    if (this.isFirstPageVisit())
-      this.notificationContainer.classList.add('expanded');
+    notification.collapseTimeout = notification.collapseTimeout ? notification.collapseTimeout : 1000 * 10;
 
+    if (this.isFirstPageVisit()) {
+      this.toggleNotificationDisplay(this.notificationContainer, notification);
+      setTimeout(() => {
+        if (this.notificationContainer.classList.contains('marketing-notification--expanded'))
+          this.toggleNotificationDisplay(this.notificationContainer, notification);
+      }, notification.collapseTimeout);
+    }
     this.lsm.setItem(this.notificationTitle, new Date().toISOString());
   }
 
@@ -29,18 +36,35 @@ export class JsMarketingNotification {
       document.body.removeChild(this.notificationContainer);
   }
 
+  public set setOpenCallback(fn: Function) {
+    if (typeof(fn) !== 'function') return;
+    this.openCallback = fn;
+  }
+
+  public set setCloseCallback(fn: Function) {
+    if (typeof(fn) !== 'function') return;
+    this.closeCallback = fn;
+  }
+
+  constructor(private notificationTitle: string, private notificationParent: Element) { }
+
   private isFirstPageVisit(): boolean {
     return null === this.lsm.getItem(this.notificationTitle);
   }
 
-  private createNotificationTab(tabText: string, containerNode: Element): Element {
-    const node = document.createElement('div');
+  private createNotificationTab(tabText: string, containerNode: Element, notification: Notification): Element {
+    const node = document.createElement('div'),
+          nodeHeader = document.createElement('h2'),
+          nodeArrow = document.createElement('span');
 
-    node.innerHTML = tabText;
+    ['icon', 'arrow-right'].forEach(clss => nodeArrow.classList.add(clss));
+    nodeHeader.innerHTML = tabText;
+    node.appendChild(nodeHeader);
+    node.appendChild(nodeArrow);
     node.classList.add('marketing-notification__tab');
 
     node.addEventListener('click', e => {
-      containerNode.classList.toggle('expanded');
+      this.toggleNotificationDisplay(containerNode, notification);
     });
 
     return node;
@@ -59,5 +83,17 @@ export class JsMarketingNotification {
     containerNode.appendChild(node);
 
     return containerNode;
+  }
+
+  private toggleNotificationDisplay(node: Element, notification: Notification): void {
+    const expansionClass = 'marketing-notification--expanded';
+    node.classList.toggle(expansionClass);
+
+    if (node.classList.contains(expansionClass)) {
+      if (this.openCallback) this.openCallback(node);
+    }
+    else {
+      if (this.closeCallback) return this.closeCallback(node);
+    }
   }
 }
