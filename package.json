@@ -26,6 +26,11 @@
     "src/js-marketing-notification.ts",
     "src/**/github/**"
   ],
+  "directories": {
+    "baseURL": "src",
+    "packages": "src",
+    "lib": "src"
+  },
   "dependencies": {},
   "devDependencies": {
     "karma": "^0.13.22",
